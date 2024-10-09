@@ -3,7 +3,6 @@ import sys
 import math
 import heapq
 
-
 # sys.stdin = open("./input.txt", "r")
 
 
@@ -31,27 +30,14 @@ def dijkstra(graph, start):
 
 
 def get_gains(trips, dists):
-    new_gains = {}
+    new_gains = []
 
     for trip_id in trips:
         r, d = trips[trip_id]
         if dists[d] != math.inf and r >= dists[d]:
-            new_gains[trip_id] = r - dists[d]
+            heapq.heappush(new_gains, (-r + dists[d], trip_id))
 
     return new_gains
-
-
-def get_best_trip(gains):
-    best_trip_id = -1
-    best_gain = -1
-    for trip_id in gains:
-        gain = gains[trip_id]
-
-        if gain > best_gain or (gain == best_gain and trip_id < best_trip_id):
-            best_trip_id = trip_id
-            best_gain = gain
-
-    return best_trip_id
 
 
 Q = int(input())
@@ -60,7 +46,7 @@ start_node = 0
 start_node_changed = True
 distances = []
 trips = {}
-gains = {}
+gains = []
 
 for _ in range(Q):
     command = list(map(int, input().split()))
@@ -85,7 +71,7 @@ for _ in range(Q):
 
         if not start_node_changed:
             if distances[dest] != math.inf and revenue >= distances[dest]:
-                gains[id] = revenue - distances[dest]
+                heapq.heappush(gains, (-revenue + distances[dest], id))
 
     # 여행 상품 취소
     elif command[0] == 300:
@@ -93,8 +79,6 @@ for _ in range(Q):
 
         if id in trips:
             del trips[id]
-        if id in gains:
-            del gains[id]
 
     # 최적의 여행 상품 판매
     elif command[0] == 400:
@@ -103,13 +87,20 @@ for _ in range(Q):
             gains = get_gains(trips, distances)
             start_node_changed = False
 
-        id = get_best_trip(gains)
-        if id == -1:
-            print(-1)
-        else:
-            print(id)
+        id = -1
+        while True:
+            if len(gains) == 0:
+                break
+
+            _, new_id = heapq.heappop(gains)
+
+            if new_id in trips:
+                id = new_id
+                break
+
+        print(id)
+        if id != -1:
             del trips[id]
-            del gains[id]
 
     # 여행 상품의 출발지 변경
     elif command[0] == 500:
