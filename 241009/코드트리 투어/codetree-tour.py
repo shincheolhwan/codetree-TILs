@@ -3,6 +3,7 @@ import sys
 import math
 import heapq
 
+
 # sys.stdin = open("./input.txt", "r")
 
 
@@ -29,7 +30,7 @@ def dijkstra(graph, start):
     return dp
 
 
-def get_gains(dists):
+def get_gains(trips, dists):
     new_gains = {}
 
     for trip_id in trips:
@@ -82,6 +83,10 @@ for _ in range(Q):
         id, revenue, dest = command[1], command[2], command[3]
         trips[id] = (revenue, dest)
 
+        if not start_node_changed:
+            if distances[dest] != math.inf and revenue >= distances[dest]:
+                gains[id] = revenue - distances[dest]
+
     # 여행 상품 취소
     elif command[0] == 300:
         id = command[1]
@@ -95,7 +100,8 @@ for _ in range(Q):
     elif command[0] == 400:
         if start_node_changed:
             distances = dijkstra(codetree_land, start_node)
-            gains = get_gains(distances)
+            gains = get_gains(trips, distances)
+            start_node_changed = False
 
         id = get_best_trip(gains)
         if id == -1:
