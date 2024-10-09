@@ -10,15 +10,15 @@ import heapq
 def dijkstra(graph, start):
     dp = [math.inf] * n
     dp[start] = 0
-    pq = []
-    heapq.heappush(pq, (0, start))
+    pq = [(0, start)]
+    visited = [False] * n
 
     while True:
         if len(pq) == 0:
             break
 
         dist, cur_node = heapq.heappop(pq)
-        if dist > dp[cur_node]:
+        if visited[cur_node]:
             continue
 
         for next_node in graph[cur_node]:
@@ -56,10 +56,10 @@ def get_best_trip(gains):
 
 Q = int(input())
 codetree_land = {}
-trips = {}
 start_node = 0
 start_node_changed = True
 distances = []
+trips = {}
 gains = {}
 
 for _ in range(Q):
