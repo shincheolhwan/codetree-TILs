@@ -29,8 +29,11 @@ def eat_sushi(t):
                     end_x = dish[1] + t - dish_t
 
                 temp = L * (start_x // L)
-                # 먹을 수 있음
-                if start_x - temp <= sit_x <= end_x - temp:
+                # print(f"start_x:{start_x} end_x:{end_x} sit_x:{sit_x}")
+                if (
+                        (end_x - start_x >= L)
+                        or (start_x - temp <= sit_x <= end_x - temp)
+                ):
                     count += 1
                     customer[2] -= 1
 
