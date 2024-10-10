@@ -33,6 +33,7 @@ def eat_sushi(t):
                 if (
                         (end_x - start_x >= L)
                         or (start_x - temp <= sit_x <= end_x - temp)
+                        or (start_x - temp <= sit_x + L <= end_x - temp)
                 ):
                     count += 1
                     customer[2] -= 1
