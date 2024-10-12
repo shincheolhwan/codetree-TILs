@@ -168,7 +168,6 @@ def throw_ball(turn):
             if maps[r][c] == 1 or maps[r][c] == 2 or maps[r][c] == 3:
                 score = get_score(r, c)
                 return score
-        pass
     # 위 -> 아래
     elif 3 * n <= turn < 4 * n:
         c = n - 1 - turn % n
@@ -177,7 +176,7 @@ def throw_ball(turn):
                 score = get_score(r, c)
                 return score
 
-    pass
+    return 0
 
 
 # 격자의 크기 n, 팀의 개수 m, 라운드 수 k
@@ -207,8 +206,9 @@ for t in range(k):
 
     # for row in maps:
     #     print(*row)
-    # for team in teams:
-    #     print(f"head: {team.head_x, team.head_y}, tail: {team.tail_x, team.tail_y}")
 
     total_score += throw_ball(t)
+
+    # for team in teams:
+    #     print(f"head: {team.head_x, team.head_y}, tail: {team.tail_x, team.tail_y}")
 print(total_score)
