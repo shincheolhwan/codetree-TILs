@@ -33,6 +33,9 @@ def find_tail(x, y):
     visited = [[False] * n for _ in range(n)]
     q = Queue()
     q.put((x, y, 1))
+    tail_x = -1
+    tail_y = -1
+    max_length = 1
     visited[x][y] = True
 
     while True:
@@ -50,7 +53,11 @@ def find_tail(x, y):
                     visited[next_x][next_y] = True
                     q.put((next_x, next_y, next_length))
                 elif maps[next_x][next_y] == 3:
-                    return next_x, next_y, next_length
+                    max_length = max(max_length, next_length)
+                    tail_x = next_x
+                    tail_y = next_y
+
+    return tail_x, tail_y, max_length
 
 
 def get_score(x, y):
@@ -82,7 +89,7 @@ def get_score(x, y):
 
                     elif maps[next_x][next_y] == 2:
                         visited[next_x][next_y] = True
-                        q.put((next_x, next_y))
+                        q.put((next_x, next_y, next_count))
 
                     elif maps[next_x][next_y] == 3:
                         team, _ = find_team(next_x, next_y)
@@ -109,8 +116,8 @@ def move_team(team):
     visited = [[False] * n for _ in range(n)]
     q = Queue()
     q.put((team.tail_x, team.tail_y, 3))
-    visited[team.tail_x][team.tail_y] = True
     maps[team.tail_x][team.tail_y] = 4
+    # visited[team.tail_x][team.tail_y] = True
 
     while True:
         if q.empty():
@@ -124,20 +131,25 @@ def move_team(team):
                     continue
 
                 if maps[next_x][next_y] == 1:
-                    visited[next_x][next_y] = True
-                    maps[next_x][next_y] = role
+                    if role == 3 and team.length != 2:
+                        continue
+
                     if role == 3:
                         team.tail_x = next_x
                         team.tail_y = next_y
 
-                    q.put((next_x, next_y, 1))
-                elif maps[next_x][next_y] == 2:
                     visited[next_x][next_y] = True
                     maps[next_x][next_y] = role
+                    q.put((next_x, next_y, 1))
+                elif maps[next_x][next_y] == 2:
                     if role == 3:
                         team.tail_x = next_x
                         team.tail_y = next_y
+
+                    visited[next_x][next_y] = True
+                    maps[next_x][next_y] = role
                     q.put((next_x, next_y, 2))
+
                 elif role == 1 and maps[next_x][next_y] == 4:
                     maps[next_x][next_y] = 1
                     team.head_x = next_x
